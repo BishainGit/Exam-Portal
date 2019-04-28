@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function validateForm() {
+  var x = document.forms["myForm"]["qname"].value;
+  if (x == "") {
+    alert("Name is required");
+    return false;
+    
+   
+    
+  }
+    var y = document.forms["myForm"]["subname"].value;
+  if (y == "") {
+    alert("Subject Name is required");
+    return false;
+    
+    
+  }
+  
+    
+  
+  
+}
+</script>
+</head>
+<body>
+
+<form name="myForm" action="<?php $_SERVER['PHP_SELF']?>" onsubmit="return validateForm()" method="post">
+  Name: <input type="text" name="qname"><br><br>
+  subjectname: <input type="text" name="subname"><br><br>
+  
+  <input type="submit" value="Submit">
+</form>
+
+<?php
+  session_start()
+?>
+<?php
+   if($_SERVER['REQUEST_METHOND'] == "POST"){
+      $name = $_POST['qname'];
+	  $subname = $_POST['subname'];
+	  
+	  $conn = new mysqli("localhost","root","","exam_portal");
+	  if($conn->connect_error){
+	     die ("Conection Failed" .$conn->connect_error);
+	  }
+	  $sql = "select * from quizer where name = '$name' and subname = '$subname'";
+	  if($sql){
+	       
+		   $sql4 = "select quizerid from quizer where name ='$name' and subname = '$subname'";
+		   $line = $conn->query($sql4);
+		   $row = mysqli_fetch_array($line,MYSQLI_NUM);
+		   
+		   $_SESSION['quizerid'] = $row[0];
+	       header(location : putquestion.php);
+	  }else{
+	     session_destroy();
+		 header(location : regQuizer.php);
+	  }
+	  
+   
+   }
+
+
+?>
+
+</body>
+</html>
